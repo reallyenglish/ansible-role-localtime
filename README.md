@@ -13,8 +13,8 @@ Role Variables
 
 | Variable | Description | Default |
 |----------|-------------|---------|
-| localtime\_zoneinfo\_dir | | {{ \_\_localtime\_zoneinfo\_dir }} |
-| localtime\_zone | | "" |
+| localtime\_zoneinfo\_dir | time zone directory | {{ \_\_localtime\_zoneinfo\_dir }} |
+| localtime\_zone | the time zone | "" |
 
 ## FreeBSD
 
