@@ -1,7 +1,7 @@
 ansible-role-localtime
 =====================
 
-A brief description of the role goes here.
+Set local time zone.
 
 Requirements
 ------------
@@ -11,9 +11,16 @@ None
 Role Variables
 --------------
 
-| variable | description | default |
+| Variable | Description | Default |
 |----------|-------------|---------|
+| localtime\_zoneinfo\_dir | | {{ \_\_localtime\_zoneinfo\_dir }} |
+| localtime\_zone | | "" |
 
+## FreeBSD
+
+| Variable | Default |
+|----------|-------------|---------|
+| \_\_localtime\_zoneinfo\_dir | /usr/share/zoneinfo |
 
 Dependencies
 ------------
@@ -23,6 +30,11 @@ None
 Example Playbook
 ----------------
 
+    - hosts: localhost
+      roles:
+        - ansible-role-localtime
+      vars:
+        localtime_zone: "Asia/Tokyo"
 
 License
 -------
