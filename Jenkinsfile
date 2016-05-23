@@ -1,5 +1,5 @@
 node ('virtualbox') {
-  def directory = "localtime"
+  def directory = "ansible-role-localtime"
   stage 'Clean up'
   deleteDir()
 

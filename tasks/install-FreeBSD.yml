@@ -1,6 +1,0 @@
----
-
-- name: Install localtime
-  pkgng:
-    name: localtime
-    state: present

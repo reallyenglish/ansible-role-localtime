@@ -1,2 +1,1 @@
-__localtime_db_dir: /var/db/localtime
-__localtime_conf: /usr/local/etc/localtime.conf
+__localtime_zoneinfo_dir: /usr/share/zoneinfo
