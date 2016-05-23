@@ -1,0 +1,5 @@
+- hosts: localhost
+  roles:
+    - ansible-role-localtime
+  vars:
+    localtime_config: ""

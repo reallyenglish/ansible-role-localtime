@@ -1,0 +1,6 @@
+---
+
+- name: Restart localtime_config
+  service:
+    name: localtime
+    state: restarted

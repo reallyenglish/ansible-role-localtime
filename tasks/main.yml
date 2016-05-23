@@ -1,0 +1,37 @@
+---
+# tasks file for ansible-role-localtime
+
+- include_vars: "{{ ansible_os_family }}.yml"
+
+- include: install-FreeBSD.yml
+  when: ansible_os_family == 'FreeBSD'
+
+- name: Create log directory
+  file:
+    path: "{{ localtime_log_dir }}"
+    mode: 0755
+    owner: "{{ localtime_user }}"
+    group: "{{ localtime_group }}"
+    state: directory
+  notify: Restart localtime
+
+- name: Create db directory
+  file:
+    path: "{{ localtime_db_dir }}"
+    mode: 0755
+    owner: "{{ localtime_user }}"
+    group: "{{ localtime_group }}"
+    state: directory
+  notify: Restart localtime
+
+- name: Create localtime.conf
+  template:
+    src: localtime.conf.j2
+    dest: "{{ localtime_conf }}"
+  notify: Restart localtime
+
+- name: Start localtime
+  service:
+    name: "{{ localtime_service }}"
+    enabled: true
+    state: started

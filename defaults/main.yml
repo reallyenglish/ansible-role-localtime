@@ -1,0 +1,7 @@
+localtime_user: localtime
+localtime_group: localtime
+localtime_log_dir: /var/log/localtime
+localtime_db_dir: "{{ __localtime_db_dir }}"
+localtime_service: localtime
+localtime_conf: "{{ __localtime_conf }}"
+localtime_flags: ""
