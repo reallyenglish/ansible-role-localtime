@@ -1,2 +1,2 @@
 localtime_zoneinfo_dir: "{{ __localtime_zoneinfo_dir }}"
-localtime_zone:
+localtime_zone: {}
