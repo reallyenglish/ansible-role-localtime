@@ -13,8 +13,8 @@ Role Variables
 
 | Variable | Description | Default |
 |----------|-------------|---------|
-| localtime\_zoneinfo\_dir | time zone directory | {{ \_\_localtime\_zoneinfo\_dir }} |
-| localtime\_zone | the time zone | "" |
+| localtime\_zoneinfo\_dir | | {{ \_\_localtime\_zoneinfo\_dir }} |
+| localtime\_zone | a hash of ansible\_os\_family in key and timezone in value | {} |
 
 ## FreeBSD
 
@@ -34,7 +34,9 @@ Example Playbook
       roles:
         - ansible-role-localtime
       vars:
-        localtime_zone: "Asia/Tokyo"
+        localtime_zone:
+          FreeBSD: Asia/Tokyo
+          OpenBSD: Japan
 
 License
 -------

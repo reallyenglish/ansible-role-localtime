@@ -1,10 +1,17 @@
 require 'spec_helper'
 require 'serverspec'
 
+localtime_zone = 'Japan'
+
+case os[:family]
+when 'freebsd'
+  localtime_zone = 'Asia/Tokyo'
+end
+
 describe file('/etc/localtime') do
   it { should exist }
   it { should be_symlink }
-  it { should be_linked_to '/usr/share/zoneinfo/Asia/Tokyo' }
+  it { should be_linked_to "/usr/share/zoneinfo/#{ localtime_zone }" }
 end
 
 describe command('date +%z') do

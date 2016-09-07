@@ -7,5 +7,5 @@
   file:
     force: yes
     dest: /etc/localtime
-    src: "{{ localtime_zoneinfo_dir }}/{{ localtime_zone }}"
+    src: "{{ localtime_zoneinfo_dir }}/{{ localtime_zone[ansible_os_family] }}"
     state: link
