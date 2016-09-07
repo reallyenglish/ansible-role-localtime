@@ -5,3 +5,5 @@
     localtime_zone:
       FreeBSD: Asia/Tokyo
       OpenBSD: Japan
+      Debian: Japan
+      RedHat: Japan
