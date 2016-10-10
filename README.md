@@ -13,14 +13,34 @@ Role Variables
 
 | Variable | Description | Default |
 |----------|-------------|---------|
-| localtime\_zoneinfo\_dir | | {{ \_\_localtime\_zoneinfo\_dir }} |
+| localtime\_zoneinfo\_dir | directory where zoneinfo files are located | {{ \_\_localtime\_zoneinfo\_dir }} |
 | localtime\_zone | a hash of ansible\_os\_family in key and timezone in value | {} |
+
+## Debian
+
+| Variable | Default |
+|----------|---------|
+| \_\_localtime\_zoneinfo\_dir | /usr/share/zoneinfo |
 
 ## FreeBSD
 
 | Variable | Default |
-|----------|-------------|---------|
+|----------|---------|
 | \_\_localtime\_zoneinfo\_dir | /usr/share/zoneinfo |
+
+## OpenBSD
+
+| Variable | Default |
+|----------|---------|
+| \_\_localtime\_zoneinfo\_dir | /usr/share/zoneinfo |
+
+## RedHat
+
+| Variable | Default |
+|----------|---------|
+| \_\_localtime\_zoneinfo\_dir | /usr/share/zoneinfo |
+
+Created by [yaml2readme.rb](https://gist.github.com/trombik/b2df709657c08d845b1d3b3916e592d3)
 
 Dependencies
 ------------
@@ -30,13 +50,15 @@ None
 Example Playbook
 ----------------
 
-    - hosts: localhost
-      roles:
-        - ansible-role-localtime
-      vars:
-        localtime_zone:
-          FreeBSD: Asia/Tokyo
-          OpenBSD: Japan
+```yaml
+- hosts: localhost
+  roles:
+    - ansible-role-localtime
+  vars:
+    localtime_zone:
+      FreeBSD: Asia/Tokyo
+      OpenBSD: Japan
+```
 
 License
 -------
