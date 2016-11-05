@@ -1,15 +1,12 @@
-ansible-role-localtime
-=====================
+# ansible-role-localtime
 
 Set local time zone.
 
-Requirements
-------------
+# Requirements
 
 None
 
-Role Variables
---------------
+# Role Variables
 
 | Variable | Description | Default |
 |----------|-------------|---------|
@@ -42,13 +39,11 @@ Role Variables
 
 Created by [yaml2readme.rb](https://gist.github.com/trombik/b2df709657c08d845b1d3b3916e592d3)
 
-Dependencies
-------------
+# Dependencies
 
 None
 
-Example Playbook
-----------------
+# Example Playbook
 
 ```yaml
 - hosts: localhost
@@ -60,8 +55,7 @@ Example Playbook
       OpenBSD: Japan
 ```
 
-License
--------
+# License
 
 Copyright (c) 2016 Tomoyuki Sakurai <tomoyukis@reallyenglish.com>
 
@@ -77,8 +71,7 @@ WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
 ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
-Author Information
-------------------
+# Author Information
 
 Tomoyuki Sakurai <tomoyukis@reallyenglish.com>
 
