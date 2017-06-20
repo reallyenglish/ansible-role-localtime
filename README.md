@@ -10,34 +10,32 @@ None
 
 | Variable | Description | Default |
 |----------|-------------|---------|
-| localtime\_zoneinfo\_dir | directory where zoneinfo files are located | {{ \_\_localtime\_zoneinfo\_dir }} |
-| localtime\_zone | a hash of ansible\_os\_family in key and timezone in value | {} |
+| `localtime_zoneinfo_dir` | directory where `zoneinfo` files are located | `{{ __localtime_zoneinfo_dir }}` |
+| `localtime_zone` | a hash of `ansible_os_family` in key and timezone in value | `{}` |
 
 ## Debian
 
 | Variable | Default |
 |----------|---------|
-| \_\_localtime\_zoneinfo\_dir | /usr/share/zoneinfo |
+| `__localtime_zoneinfo_dir` | `/usr/share/zoneinfo` |
 
 ## FreeBSD
 
 | Variable | Default |
 |----------|---------|
-| \_\_localtime\_zoneinfo\_dir | /usr/share/zoneinfo |
+| `__localtime_zoneinfo_dir` | `/usr/share/zoneinfo` |
 
 ## OpenBSD
 
 | Variable | Default |
 |----------|---------|
-| \_\_localtime\_zoneinfo\_dir | /usr/share/zoneinfo |
+| `__localtime_zoneinfo_dir` | `/usr/share/zoneinfo` |
 
 ## RedHat
 
 | Variable | Default |
 |----------|---------|
-| \_\_localtime\_zoneinfo\_dir | /usr/share/zoneinfo |
-
-Created by [yaml2readme.rb](https://gist.github.com/trombik/b2df709657c08d845b1d3b3916e592d3)
+| `__localtime_zoneinfo_dir` | `/usr/share/zoneinfo` |
 
 # Dependencies
 
@@ -53,10 +51,13 @@ None
     localtime_zone:
       FreeBSD: Asia/Tokyo
       OpenBSD: Japan
+      Debian: Japan
+      RedHat: Japan
 ```
 
 # License
 
+```
 Copyright (c) 2016 Tomoyuki Sakurai <tomoyukis@reallyenglish.com>
 
 Permission to use, copy, modify, and distribute this software for any
@@ -70,6 +71,7 @@ ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
 WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
 ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+```
 
 # Author Information
 
