@@ -6,73 +6,72 @@ def stepsForParallel = [:]
 // The standard 'for (String s: stringsToEcho)' syntax also doesn't work, so we
 // need to use old school 'for (int i = 0...)' style for loops.
 for (int i = 0; i < vmsToBuild.size(); i++) {
-    // Get the actual string here.
-    def vm = vmsToBuild[i]
+  // Get the actual string here.
+  def vm = vmsToBuild[i]
 
-    // Transform that into a step and add the step to the map as the value, with
-    // a name for the parallel step as the key. Here, we'll just use something
-    // like "echoing (string)"
-    def stepName = "testing ${vm}"
-    
-    stepsForParallel[stepName] = node ('virtualbox') {
+  // Transform that into a step and add the step to the map as the value, with
+  // a name for the parallel step as the key. Here, we'll just use something
+  // like "echoing (string)"
+  def stepName = "testing ${vm}"
 
-  def directory = "ansible-role-localtime"
-  env.ANSIBLE_VAULT_PASSWORD_FILE = "~/.ansible_vault_key"
-  stage 'Clean up'
-  deleteDir()
+  stepsForParallel[stepName] = node('virtualbox') {
 
-  stage 'Checkout'
-  sh "mkdir $directory"
-  dir("$directory") {
-    try {
+    def directory = "ansible-role-localtime"
+    env.ANSIBLE_VAULT_PASSWORD_FILE = "~/.ansible_vault_key"
+    stage 'Clean up'
+    deleteDir()
+
+    stage 'Checkout'
+    sh "mkdir $directory"
+    dir("$directory") {
+      try {
         checkout scm
         sh "git submodule update --init"
-    } catch (e) {
+      } catch (e) {
         currentBuild.result = 'FAILURE'
         notifyBuild(currentBuild.result)
         throw e
+      }
     }
-  }
-  dir("$directory") {
-    stage 'bundle'
-    try {
+    dir("$directory") {
+      stage 'bundle'
+      try {
         sh "bundle install --path ${env.JENKINS_HOME}/vendor/bundle"
-    } catch (e) {
+      } catch (e) {
         currentBuild.result = 'FAILURE'
         notifyBuild(currentBuild.result)
         throw e
-    }
+      }
 
-    stage "bundle exec kitchen test ${vm}"
-    try {
-      sh "bundle exec kitchen test ${vm}"
-    } catch (e) {
+      stage "bundle exec kitchen test ${vm}"
+      try {
+        sh "bundle exec kitchen test ${vm}"
+      } catch (e) {
         currentBuild.result = 'FAILURE'
         notifyBuild(currentBuild.result)
         throw e
-    } finally {
-      sh "bundle exec kitchen destroy ${vm}"
-    }
-/* if you have integration tests, uncomment the stage below
-    stage 'integration'
-    try {
-      // use native rake instead of bundle exec rake
-      // https://github.com/docker-library/ruby/issues/73
-      sh 'rake test'
-    } catch (e) {
+      } finally {
+        sh "bundle exec kitchen destroy ${vm}"
+      }
+  /* if you have integration tests, uncomment the stage below
+      stage 'integration'
+      try {
+        // use native rake instead of bundle exec rake
+        // https://github.com/docker-library/ruby/issues/73
+        sh 'rake test'
+      } catch (e) {
         currentBuild.result = 'FAILURE'
         notifyBuild(currentBuild.result)
         throw e
-    } finally {
-      sh 'rake clean'
+      } finally {
+        sh 'rake clean'
+      }
+  */
+      stage 'Notify'
+      notifyBuild(currentBuild.result)
+      step([$class: 'GitHubCommitNotifier', resultOnFailure: 'FAILURE'])
     }
-*/
-    stage 'Notify'
-    notifyBuild(currentBuild.result)
-    step([$class: 'GitHubCommitNotifier', resultOnFailure: 'FAILURE'])
   }
-}
-
 }
 
 // Actually run the steps in parallel - parallel takes a map as an argument,
