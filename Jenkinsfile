@@ -1,4 +1,20 @@
-node ('virtualbox') {
+// bundle exec kitchen list | tail -n +2 | cut -d ' '  -f 1
+def vmsToBuild = 'default-freebsd-103-amd64 default-openbsd-60-amd64 default-ubuntu-1404-amd64 default-centos-72-x86-64'.split(' ')
+
+def stepsForParallel = [:]
+
+// The standard 'for (String s: stringsToEcho)' syntax also doesn't work, so we
+// need to use old school 'for (int i = 0...)' style for loops.
+for (int i = 0; i < vmsToBuild.size(); i++) {
+    // Get the actual string here.
+    def vm = vmsToBuild[i]
+
+    // Transform that into a step and add the step to the map as the value, with
+    // a name for the parallel step as the key. Here, we'll just use something
+    // like "echoing (string)"
+    def stepName = "testing ${vm}"
+    
+    stepsForParallel[stepName] = node ('virtualbox') {
 
   def directory = "ansible-role-localtime"
   env.ANSIBLE_VAULT_PASSWORD_FILE = "~/.ansible_vault_key"
@@ -27,15 +43,15 @@ node ('virtualbox') {
         throw e
     }
 
-    stage 'bundle exec kitchen test'
+    stage "bundle exec kitchen test ${vm}"
     try {
-      sh 'bundle exec kitchen test'
+      sh "bundle exec kitchen test ${vm}"
     } catch (e) {
         currentBuild.result = 'FAILURE'
         notifyBuild(currentBuild.result)
         throw e
     } finally {
-      sh 'bundle exec kitchen destroy'
+      sh "bundle exec kitchen destroy ${vm}"
     }
 /* if you have integration tests, uncomment the stage below
     stage 'integration'
@@ -56,6 +72,12 @@ node ('virtualbox') {
     step([$class: 'GitHubCommitNotifier', resultOnFailure: 'FAILURE'])
   }
 }
+
+}
+
+// Actually run the steps in parallel - parallel takes a map as an argument,
+// hence the above.
+parallel stepsForParallel
 
 def notifyBuild(String buildStatus = 'STARTED') {
   // build status of null means successful
