@@ -14,69 +14,78 @@ for (int i = 0; i < vmsToBuild.size(); i++) {
   // like "echoing (string)"
   def stepName = "testing ${vm}"
 
-  stepsForParallel[stepName] = node('virtualbox') {
-
-    def directory = "ansible-role-localtime"
-    env.ANSIBLE_VAULT_PASSWORD_FILE = "~/.ansible_vault_key"
-    stage 'Clean up'
-    deleteDir()
-
-    stage 'Checkout'
-    sh "mkdir $directory"
-    dir("$directory") {
-      try {
-        checkout scm
-        sh "git submodule update --init"
-      } catch (e) {
-        currentBuild.result = 'FAILURE'
-        notifyBuild(currentBuild.result)
-        throw e
-      }
-    }
-    dir("$directory") {
-      stage 'bundle'
-      try {
-        sh "bundle install --path ${env.JENKINS_HOME}/vendor/bundle"
-      } catch (e) {
-        currentBuild.result = 'FAILURE'
-        notifyBuild(currentBuild.result)
-        throw e
-      }
-
-      stage "bundle exec kitchen test ${vm}"
-      try {
-        sh "bundle exec kitchen test ${vm}"
-      } catch (e) {
-        currentBuild.result = 'FAILURE'
-        notifyBuild(currentBuild.result)
-        throw e
-      } finally {
-        sh "bundle exec kitchen destroy ${vm}"
-      }
-  /* if you have integration tests, uncomment the stage below
-      stage 'integration'
-      try {
-        // use native rake instead of bundle exec rake
-        // https://github.com/docker-library/ruby/issues/73
-        sh 'rake test'
-      } catch (e) {
-        currentBuild.result = 'FAILURE'
-        notifyBuild(currentBuild.result)
-        throw e
-      } finally {
-        sh 'rake clean'
-      }
-  */
-      stage 'Notify'
-      notifyBuild(currentBuild.result)
-      step([$class: 'GitHubCommitNotifier', resultOnFailure: 'FAILURE'])
-    }
-  }
+  stepsForParallel[stepName] = transformIntoStep(vm)
 }
 
 // Actually run the steps in parallel - parallel takes a map as an argument,
 // hence the above.
 parallel stepsForParallel
+
+def transformIntoStep(vmName) {
+  // We need to wrap what we return in a Groovy closure, or else it's invoked
+  // when this method is called, not when we pass it to parallel.
+  // To do this, you need to wrap the code below in { }, and either return
+  // that explicitly, or use { -> } syntax.
+  return {
+    node('virtualbox') {
+      def directory = "ansible-role-localtime"
+      env.ANSIBLE_VAULT_PASSWORD_FILE = "~/.ansible_vault_key"
+      stage 'Clean up'
+      deleteDir()
+
+      stage 'Checkout'
+      sh "mkdir $directory"
+      dir("$directory") {
+        try {
+          checkout scm
+          sh "git submodule update --init"
+        } catch (e) {
+          currentBuild.result = 'FAILURE'
+          notifyBuild(currentBuild.result)
+          throw e
+        }
+      }
+      dir("$directory") {
+        stage 'bundle'
+        try {
+          sh "bundle install --path ${env.JENKINS_HOME}/vendor/bundle"
+        } catch (e) {
+          currentBuild.result = 'FAILURE'
+          notifyBuild(currentBuild.result)
+          throw e
+        }
+
+        stage "bundle exec kitchen test ${vmName}"
+        try {
+          sh "bundle exec kitchen test ${vmName}"
+        } catch (e) {
+          currentBuild.result = 'FAILURE'
+          notifyBuild(currentBuild.result)
+          throw e
+        } finally {
+          sh "bundle exec kitchen destroy ${vmName}"
+        }
+    /* if you have integration tests, uncomment the stage below
+        stage 'integration'
+        try {
+          // use native rake instead of bundle exec rake
+          // https://github.com/docker-library/ruby/issues/73
+          sh 'rake test'
+        } catch (e) {
+          currentBuild.result = 'FAILURE'
+          notifyBuild(currentBuild.result)
+          throw e
+        } finally {
+          sh 'rake clean'
+        }
+    */
+        stage 'Notify'
+        notifyBuild(currentBuild.result)
+        step([$class: 'GitHubCommitNotifier', resultOnFailure: 'FAILURE'])
+      }
+    }
+  }
+}
 
 def notifyBuild(String buildStatus = 'STARTED') {
   // build status of null means successful
